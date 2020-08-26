@@ -17,8 +17,13 @@ cat "$_HOME_"/do_it_systemlibs.sh > $_HOME_/script/do_it_systemlibs.sh
 chmod a+rx $_HOME_/script/do_it_systemlibs.sh
 
 
-# change to what your local system is
-system_to_build_for="ubuntu:16.04"
+# change to the type of your local linux system:
+# system_to_build_for="ubuntu:20.04"
+system_to_build_for="ubuntu:18.04"
+# system_to_build_for="ubuntu:16.04"
+# system_to_build_for="debian:10"
+# system_to_build_for="debian:9"
+# system_to_build_for="alpine:3.12.0"
 
 cd $_HOME_/
 docker run -ti --rm \
@@ -27,7 +32,6 @@ docker run -ti --rm \
   -v $_HOME_/workspace:/workspace \
   --net=host \
   "$system_to_build_for" \
-  /bin/bash \
-  /script/do_it_systemlibs.sh docker
+  /bin/sh -c "apk add bash 2>/dev/null; /bin/bash /script/do_it_systemlibs.sh docker"
 
 

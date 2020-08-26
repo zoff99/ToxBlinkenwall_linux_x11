@@ -1,6 +1,5 @@
 #! /bin/bash
 
-
 _HOME2_=$(dirname $0)
 export _HOME2_
 _HOME_=$(cd $_HOME2_;pwd)
@@ -48,20 +47,31 @@ if [ "$1""x" == "dockerx" ]; then
 
     echo "installing system packages ..."
 
-    redirect_cmd apt-get update $qqq
+    export DEBIAN_FRONTEND=noninteractive
 
-    redirect_cmd apt-get install $qqq -y --force-yes lsb-release
-    system__=$(lsb_release -i|cut -d ':' -f2|sed -e 's#\s##g')
-    version__=$(lsb_release -r|cut -d ':' -f2|sed -e 's#\s##g')
+    os_release=$(cat /etc/os-release 2>/dev/null|grep 'PRETTY_NAME=' 2>/dev/null|cut -d'=' -f2)
+    if [ "$os_release""x" != "x" ] ;then
+        echo "using /etc/os-release"
+        system__=$(cat /etc/os-release 2>/dev/null|grep '^NAME=' 2>/dev/null|cut -d'=' -f2|tr -d '"'|sed -e 's#\s##g')
+        version__=$(cat /etc/os-release 2>/dev/null|grep '^VERSION_ID=' 2>/dev/null|cut -d'=' -f2|tr -d '"'|sed -e 's#\s##g')
+    else
+        redirect_cmd apt-get update $qqq
+        echo "using lsb-release"
+        redirect_cmd apt-get install $qqq -y --force-yes lsb-release
+        system__=$(lsb_release -i|cut -d ':' -f2|sed -e 's#\s##g')
+        version__=$(lsb_release -r|cut -d ':' -f2|sed -e 's#\s##g')
+    fi
+
     echo "compiling on: $system__ $version__"
 
-    pkgs_name="pkgs_"$(echo "$system__"|tr '.' '_')"_"$(echo $version__|tr '.' '_')
+    pkgs_name="pkgs_"$(echo "$system__"|tr '.' '_'|tr '/' '_')"_"$(echo $version__|tr '.' '_'|tr '/' '_')
     echo "PKG:-->""$pkgs_name""<--"
 
     echo "installing more system packages ..."
 
     # ------ specific for Ubuntu_18_04 ------
     pkgs_Ubuntu_18_04='
+        :u:
         unzip
         zip
         automake
@@ -81,6 +91,7 @@ if [ "$1""x" == "dockerx" ]; then
         libv4l-dev
         v4l-conf
         v4l-utils
+        libjpeg8-dev
         libavcodec-dev
         libavdevice-dev
         libsodium-dev
@@ -90,8 +101,21 @@ if [ "$1""x" == "dockerx" ]; then
     '
     # ------ specific for Ubuntu_18_04 ------
 
+    # ------ specific for Ubuntu_20_04 ------
+    pkgs_Ubuntu_20_04="$pkgs_Ubuntu_18_04"
+    # ------ specific for Ubuntu_20_04 ------
+
+    # ------ specific for pkgs_DebianGNU_Linux_9 ------
+    pkgs_DebianGNU_Linux_9="$pkgs_Ubuntu_18_04"
+    # ------ specific for pkgs_DebianGNU_Linux_9 ------
+
+    # ------ specific for pkgs_DebianGNU_Linux_10 ------
+    pkgs_DebianGNU_Linux_10="$pkgs_Ubuntu_18_04"
+    # ------ specific for pkgs_DebianGNU_Linux_10 ------
+
     # ------ specific for Ubuntu_16_04 ------
     pkgs_Ubuntu_16_04='
+        :u:
         software-properties-common
         :c:add-apt-repository\sppa:jonathonf/ffmpeg-4\s-y
         :u:
@@ -114,6 +138,7 @@ if [ "$1""x" == "dockerx" ]; then
         libv4l-dev
         v4l-conf
         v4l-utils
+        libjpeg8-dev
         libavcodec-dev
         libavdevice-dev
         libsodium-dev
@@ -123,16 +148,56 @@ if [ "$1""x" == "dockerx" ]; then
     '
     # ------ specific for Ubuntu_16_04 ------
 
+    # ------ specific for AlpineLinux_3_12_0 ------
+    pkgs_AlpineLinux_3_12_0='
+        :c:apk\supdate
+        :c:apk\sadd\sunzip
+        :c:apk\sadd\szip
+        :c:apk\sadd\smake
+        :c:apk\sadd\sgcc
+        :c:apk\sadd\slinux-headers
+        :c:apk\sadd\smusl-dev
+        :c:apk\sadd\sautomake
+        :c:apk\sadd\sautoconf
+        :c:apk\sadd\scheck
+        :c:apk\sadd\slibtool
+        :c:apk\sadd\srsync
+        :c:apk\sadd\sgit
+        :c:apk\sadd\slibx11-dev
+        :c:apk\sadd\sffmpeg
+        :c:apk\sadd\sffmpeg-dev
+        :c:apk\sadd\salsa-lib
+        :c:apk\sadd\salsa-lib-dev
+        :c:apk\sadd\sv4l-utils
+        :c:apk\sadd\sv4l-utils-dev
+        :c:apk\sadd\slibjpeg
+        :c:apk\sadd\slibsodium
+        :c:apk\sadd\slibsodium-dev
+        :c:apk\sadd\slibsodium-static
+        :c:apk\sadd\slibvpx
+        :c:apk\sadd\slibvpx-dev
+        :c:apk\sadd\sopus
+        :c:apk\sadd\sopus-dev
+        :c:apk\sadd\sx264
+        :c:apk\sadd\sx264-dev
+    '
+    # ------ specific for AlpineLinux_3_12_0 ------
+
+    echo '# install commands for : '"$system__ $version__" > /artefacts/install_commands.txt
+
     for i in ${!pkgs_name} ; do
         if [[ ${i:0:3} == ":u:" ]]; then
             echo "apt-get update"
+            echo "apt-get update" >> /artefacts/install_commands.txt
             redirect_cmd apt-get update $qqq
         elif [[ ${i:0:3} == ":c:" ]]; then
             cmd=$(echo "${i:3}"|sed -e 's#\\s# #g')
             echo "$cmd"
+            echo "$cmd" >> /artefacts/install_commands.txt
             $cmd
         else
             echo "apt-get install -y --force-yes ""$i"
+            echo "apt-get install -y --force-yes ""$i" >> /artefacts/install_commands.txt
             redirect_cmd apt-get install $qqq -y --force-yes $i
         fi
     done
@@ -176,17 +241,24 @@ cat toxblinkenwall.c |grep 'define HAVE_FRAMEBUFFER'
 cat toxblinkenwall.c |grep 'define HAVE_X11_AS_FB'
 ## configure for linux X11 ------------
 
+# set 640x480 camera resolution to get better fps ---
+cat toxblinkenwall.c | grep 'int video_high ='
+sed -i -e 's#int video_high = 1;#int video_high = 0;#' toxblinkenwall.c
+cat toxblinkenwall.c | grep 'int video_high ='
+# set 640x480 camera resolution to get better fps ---
 
-_OO_=" $C_FLAGS $CXX_FLAGS $LD_FLAGS "
+_OO_=" $C_FLAGS $LD_FLAGS "
 
 gcc $_OO_ \
 -Wno-unused-variable \
--fPIC -I$_HOME_/inst/include -o toxblinkenwall -lm \
+-fstack-protector-all --param=ssp-buffer-size=1 \
+-fPIC -I$_HOME_/inst/include -o toxblinkenwall \
 toxblinkenwall.c rb.c \
 -std=gnu99 \
 -L$_HOME_/inst/lib/ \
 $_HOME_/inst/lib/libtoxcore.a \
 $_HOME_/inst/lib/libtoxav.a \
+-l:libsodium.a \
 -lrt \
 -lm \
 -lX11 \
@@ -197,9 +269,9 @@ $_HOME_/inst/lib/libtoxav.a \
 -lavutil \
 -lswresample \
 -lswscale \
--lsodium \
+-lv4lconvert \
 -lasound \
--lpthread -lv4lconvert \
+-lpthread \
 -ldl || exit 1
 
 ldd toxblinkenwall || exit 1
