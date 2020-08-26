@@ -90,9 +90,51 @@ if [ "$1""x" == "dockerx" ]; then
     '
     # ------ specific for Ubuntu_18_04 ------
 
+    # ------ specific for Ubuntu_16_04 ------
+    pkgs_Ubuntu_16_04='
+        software-properties-common
+        :c:add-apt-repository\sppa:jonathonf/ffmpeg-4\s-y
+        :u:
+        ffmpeg
+        unzip
+        zip
+        automake
+        autotools-dev
+        build-essential
+        check
+        checkinstall
+        libtool
+        pkg-config
+        rsync
+        git
+        libx11-dev
+        x11-common
+        x11-utils
+        libasound2-dev
+        libv4l-dev
+        v4l-conf
+        v4l-utils
+        libavcodec-dev
+        libavdevice-dev
+        libsodium-dev
+        libvpx-dev
+        libopus-dev
+        libx264-dev
+    '
+    # ------ specific for Ubuntu_16_04 ------
+
     for i in ${!pkgs_name} ; do
-        echo "apt-get install -y --force-yes ""$i"
-        redirect_cmd apt-get install $qqq -y --force-yes $i
+        if [[ ${i:0:3} == ":u:" ]]; then
+            echo "apt-get update"
+            redirect_cmd apt-get update $qqq
+        elif [[ ${i:0:3} == ":c:" ]]; then
+            cmd=$(echo "${i:3}"|sed -e 's#\\s# #g')
+            echo "$cmd"
+            $cmd
+        else
+            echo "apt-get install -y --force-yes ""$i"
+            redirect_cmd apt-get install $qqq -y --force-yes $i
+        fi
     done
 fi
 

@@ -18,7 +18,7 @@ chmod a+rx $_HOME_/script/do_it_systemlibs.sh
 
 
 # change to what your local system is
-system_to_build_for="ubuntu:18.04"
+system_to_build_for="ubuntu:16.04"
 
 cd $_HOME_/
 docker run -ti --rm \
