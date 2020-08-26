@@ -165,9 +165,10 @@ ls -hal toxblinkenwall
 
 if [ "$1""x" == "dockerx" ]; then
     cp -av toxblinkenwall /artefacts/
-    chmod -R a+rw /artefacts/
+    chmod -R u+rw /artefacts/
 else
     cp -av toxblinkenwall $_HOME_/run/
+    chmod u+rx $_HOME_/run/toxblinkenwall
     cd $_HOME_/
 fi
 
