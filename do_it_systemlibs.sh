@@ -325,14 +325,15 @@ if [ "$1""x" == "dockerx" ]; then
     if [ "$2""x" == "runx" ]; then
         cd /artefacts/
         useradd -ms /bin/bash user01
-        # apt-get install -y --force-yes xterm
-        # su user01 -c "echo $DISPLAY;xterm"
         echo "---------------------------------------------------"
         echo "please locally allow this numeric userid with xhost"
         cat /etc/passwd | grep user01
         echo "please locally allow this numeric userid with xhost"
         echo "---------------------------------------------------"
         cd /artefacts/
+        # add user to video group (to access /dev/video0 from host)
+        usermod -a -G video user01
+        cat /etc/group | grep video
         # we need to get STDIN through to the "su" command
         tail -f /artefacts/toxblinkenwall.log </dev/null &
         su user01 -c './toxblinkenwall <&7' 7<&0 </dev/tty
