@@ -155,6 +155,7 @@ if [ "$1""x" == "dockerx" ]; then
     # ------ specific for AlpineLinux_3_12_0 ------
     pkgs_AlpineLinux_3_12_0='
         :c:apk\supdate
+        :c:apk\sadd\sshadow
         :c:apk\sadd\sunzip
         :c:apk\sadd\szip
         :c:apk\sadd\smake
@@ -288,7 +289,7 @@ sed -i -e 's#int video_high = 1;#int video_high = 0;#' toxblinkenwall.c
 cat toxblinkenwall.c | grep 'int video_high ='
 # set 640x480 camera resolution to get better fps ---
 
-_OO_=" $C_FLAGS $LD_FLAGS "
+_OO_=" -D_GNU_SOURCE -g -O3 "
 
 gcc $_OO_ \
 -Wno-unused-variable \
@@ -333,8 +334,8 @@ if [ "$1""x" == "dockerx" ]; then
         echo "---------------------------------------------------"
         cd /artefacts/
         # we need to get STDIN through to the "su" command
-        su user01 -c './toxblinkenwall <&7 &' 7<&0 </dev/tty
-        tail -f /artefacts/toxblinkenwall.log
+        tail -f /artefacts/toxblinkenwall.log </dev/null &
+        su user01 -c './toxblinkenwall <&7' 7<&0 </dev/tty
     fi
 else
     cp -av toxblinkenwall $_HOME_/run/
