@@ -24,6 +24,8 @@ system_to_build_for="ubuntu:18.04"
 # system_to_build_for="debian:10"
 # system_to_build_for="debian:9"
 # system_to_build_for="alpine:3.12.0"
+# system_to_build_for="archlinux:20200605"
+# system_to_build_for="gentoo/stage3-amd64:latest"
 
 cd $_HOME_/
 docker run -ti --rm \

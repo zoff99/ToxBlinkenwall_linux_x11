@@ -45,9 +45,11 @@ if [ "$1""x" == "dockerx" ]; then
         fi
     }
 
-    echo "installing system packages ..."
+    # echo "installing system packages ..."
 
     export DEBIAN_FRONTEND=noninteractive
+
+    # cat /etc/os-release
 
     os_release=$(cat /etc/os-release 2>/dev/null|grep 'PRETTY_NAME=' 2>/dev/null|cut -d'=' -f2)
     if [ "$os_release""x" != "x" ] ;then
@@ -72,6 +74,7 @@ if [ "$1""x" == "dockerx" ]; then
     # ------ specific for Ubuntu_18_04 ------
     pkgs_Ubuntu_18_04='
         :u:
+        passwd
         unzip
         zip
         automake
@@ -119,6 +122,7 @@ if [ "$1""x" == "dockerx" ]; then
         software-properties-common
         :c:add-apt-repository\sppa:jonathonf/ffmpeg-4\s-y
         :u:
+        passwd
         ffmpeg
         unzip
         zip
@@ -182,6 +186,43 @@ if [ "$1""x" == "dockerx" ]; then
         :c:apk\sadd\sx264-dev
     '
     # ------ specific for AlpineLinux_3_12_0 ------
+
+
+    # ------ specific for pkgs_ArchLinux_ ------
+    pkgs_ArchLinux_='
+        :c:pacman\s-Sy
+        :c:pacman\s-S\s--noconfirm\sbase-devel
+        :c:pacman\s-S\s--noconfirm\sglibc
+        :c:pacman\s-S\s--noconfirm\score/make
+        :c:pacman\s-S\s--noconfirm\sffmpeg
+        :c:pacman\s-S\s--noconfirm\slibsodium
+        :c:pacman\s-S\s--noconfirm\sv4l-utils
+        :c:pacman\s-S\s--noconfirm\sautomake
+        :c:pacman\s-S\s--noconfirm\slibx11
+        :c:pacman\s-S\s--noconfirm\sextra/check
+        :c:pacman\s-S\s--noconfirm\sautoconf
+        :c:pacman\s-S\s--noconfirm\sgit
+    '
+    # ------ specific for pkgs_ArchLinux_ ------
+
+    # ------ specific for pkgs_Gentoo_ ------
+    pkgs_Gentoo_='
+        :c:emerge-webrsync
+        :c:emerge\s-u1\ssys-apps/portage
+        :c:emerge\s-u1\ssys-devel/gcc
+        :c:emerge\s-u1\sdev-vcs/git
+        :c:emerge\s-u1\slibsodium
+        :c:emerge\s-u1\ssys-devel/autoconf
+        :c:emerge\s-u1\smedia-libs/libv4l
+        :c:emerge\s-u1\smedia-libs/alsa-lib
+        :c:emerge\s-u1\smedia-libs/x264
+        :c:emerge\s-u1\smedia-libs/libvpx
+        :c:emerge\s-u1\smedia-libs/opus
+        :c:emerge\s-u1\sffmpeg
+        :c:emerge\s-u1\sx11-libs/libX11
+    '
+    # ------ specific for pkgs_Gentoo_ ------
+
 
     echo '# install commands for : '"$system__ $version__" > /artefacts/install_commands.txt
 
@@ -258,7 +299,7 @@ toxblinkenwall.c rb.c \
 -L$_HOME_/inst/lib/ \
 $_HOME_/inst/lib/libtoxcore.a \
 $_HOME_/inst/lib/libtoxav.a \
--l:libsodium.a \
+-lsodium \
 -lrt \
 -lm \
 -lX11 \
@@ -280,6 +321,19 @@ ls -hal toxblinkenwall
 if [ "$1""x" == "dockerx" ]; then
     cp -av toxblinkenwall /artefacts/
     chmod -R u+rw /artefacts/
+    if [ "$2""x" == "runx" ]; then
+        cd /artefacts/
+        useradd -ms /bin/bash user01
+        # apt-get install -y --force-yes xterm
+        # su user01 -c "echo $DISPLAY;xterm"
+        echo "---------------------------------------------------"
+        echo "please locally allow this numeric userid with xhost"
+        cat /etc/passwd | grep user01
+        echo "please locally allow this numeric userid with xhost"
+        echo "---------------------------------------------------"
+        su user01 -c 'echo $DISPLAY;cd /artefacts/;./toxblinkenwall </dev/null &'
+        tail -f /artefacts/toxblinkenwall.log
+    fi
 else
     cp -av toxblinkenwall $_HOME_/run/
     chmod u+rx $_HOME_/run/toxblinkenwall
