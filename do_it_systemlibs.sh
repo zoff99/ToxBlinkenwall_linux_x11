@@ -331,7 +331,9 @@ if [ "$1""x" == "dockerx" ]; then
         cat /etc/passwd | grep user01
         echo "please locally allow this numeric userid with xhost"
         echo "---------------------------------------------------"
-        su user01 -c 'echo $DISPLAY;cd /artefacts/;./toxblinkenwall &'
+        cd /artefacts/
+        # we need to get STDIN through to the "su" command
+        su user01 -c './toxblinkenwall <&7 &' 7<&0 </dev/tty
         tail -f /artefacts/toxblinkenwall.log
     fi
 else
