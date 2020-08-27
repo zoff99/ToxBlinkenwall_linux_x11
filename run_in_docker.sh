@@ -30,24 +30,51 @@ system_to_build_for="ubuntu:18.04"
 cd $_HOME_/
 
 if [ -e /dev/video0 ]; then
-    docker run -ti --rm \
-      -v $_HOME_/artefacts:/artefacts \
-      -v $_HOME_/script:/script \
-      -v $_HOME_/workspace:/workspace \
-      -e DISPLAY=${DISPLAY} \
-      -v /tmp/.X11-unix:/tmp/.X11-unix \
-      --device=/dev/video0:/dev/video0 \
-      --net=host \
-      "$system_to_build_for" \
-      /bin/sh -c "apk add bash 2>/dev/null; /bin/bash /script/do_it_systemlibs.sh docker run"
+    if [ -e /dev/snd ]; then
+        docker run -ti --rm \
+          -v $_HOME_/artefacts:/artefacts \
+          -v $_HOME_/script:/script \
+          -v $_HOME_/workspace:/workspace \
+          -e DISPLAY=${DISPLAY} \
+          -v /tmp/.X11-unix:/tmp/.X11-unix \
+          --device=/dev/video0:/dev/video0 \
+          --device=/dev/snd:/dev/snd \
+          --net=host \
+          "$system_to_build_for" \
+          /bin/sh -c "apk add bash 2>/dev/null; /bin/bash /script/do_it_systemlibs.sh docker run"
+    else
+        docker run -ti --rm \
+          -v $_HOME_/artefacts:/artefacts \
+          -v $_HOME_/script:/script \
+          -v $_HOME_/workspace:/workspace \
+          -e DISPLAY=${DISPLAY} \
+          -v /tmp/.X11-unix:/tmp/.X11-unix \
+          --device=/dev/video0:/dev/video0 \
+          --net=host \
+          "$system_to_build_for" \
+          /bin/sh -c "apk add bash 2>/dev/null; /bin/bash /script/do_it_systemlibs.sh docker run"
+    fi
 else
-    docker run -ti --rm \
-      -v $_HOME_/artefacts:/artefacts \
-      -v $_HOME_/script:/script \
-      -v $_HOME_/workspace:/workspace \
-      -e DISPLAY=${DISPLAY} \
-      -v /tmp/.X11-unix:/tmp/.X11-unix \
-      --net=host \
-      "$system_to_build_for" \
-      /bin/sh -c "apk add bash 2>/dev/null; /bin/bash /script/do_it_systemlibs.sh docker run"
+    if [ -e /dev/snd ]; then
+        docker run -ti --rm \
+          -v $_HOME_/artefacts:/artefacts \
+          -v $_HOME_/script:/script \
+          -v $_HOME_/workspace:/workspace \
+          -e DISPLAY=${DISPLAY} \
+          -v /tmp/.X11-unix:/tmp/.X11-unix \
+          --device=/dev/snd:/dev/snd \
+          --net=host \
+          "$system_to_build_for" \
+          /bin/sh -c "apk add bash 2>/dev/null; /bin/bash /script/do_it_systemlibs.sh docker run"
+    else
+        docker run -ti --rm \
+          -v $_HOME_/artefacts:/artefacts \
+          -v $_HOME_/script:/script \
+          -v $_HOME_/workspace:/workspace \
+          -e DISPLAY=${DISPLAY} \
+          -v /tmp/.X11-unix:/tmp/.X11-unix \
+          --net=host \
+          "$system_to_build_for" \
+          /bin/sh -c "apk add bash 2>/dev/null; /bin/bash /script/do_it_systemlibs.sh docker run"
+    fi
 fi

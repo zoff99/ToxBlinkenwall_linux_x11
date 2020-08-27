@@ -91,6 +91,7 @@ if [ "$1""x" == "dockerx" ]; then
         x11-utils
         ffmpeg
         libasound2-dev
+        alsa-utils
         libv4l-dev
         v4l-conf
         v4l-utils
@@ -245,7 +246,6 @@ if [ "$1""x" == "dockerx" ]; then
     done
 fi
 
-
 # build toxcore -------------
 cd $_SRC_
 rm -Rf ./c-toxcore/
@@ -334,6 +334,9 @@ if [ "$1""x" == "dockerx" ]; then
         # add user to video group (to access /dev/video0 from host)
         usermod -a -G video user01
         cat /etc/group | grep video
+        # add user to audio group (to access /dev/snd from host)
+        usermod -a -G audio user01
+        cat /etc/group | grep audio
         # we need to get STDIN through to the "su" command
         tail -f /artefacts/toxblinkenwall.log </dev/null &
         su user01 -c './toxblinkenwall <&7' 7<&0 </dev/tty
