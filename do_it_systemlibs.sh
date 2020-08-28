@@ -109,13 +109,13 @@ if [ "$1""x" == "dockerx" ]; then
     pkgs_Ubuntu_20_04="$pkgs_Ubuntu_18_04"
     # ------ specific for Ubuntu_20_04 ------
 
-    # ------ specific for pkgs_DebianGNU_Linux_9 ------
+    # ------ specific for DebianGNU_Linux_9 ------
     pkgs_DebianGNU_Linux_9="$pkgs_Ubuntu_18_04"
-    # ------ specific for pkgs_DebianGNU_Linux_9 ------
+    # ------ specific for DebianGNU_Linux_9 ------
 
-    # ------ specific for pkgs_DebianGNU_Linux_10 ------
+    # ------ specific for DebianGNU_Linux_10 ------
     pkgs_DebianGNU_Linux_10="$pkgs_Ubuntu_18_04"
-    # ------ specific for pkgs_DebianGNU_Linux_10 ------
+    # ------ specific for DebianGNU_Linux_10 ------
 
     # ------ specific for Ubuntu_16_04 ------
     pkgs_Ubuntu_16_04='
@@ -152,6 +152,45 @@ if [ "$1""x" == "dockerx" ]; then
         libx264-dev
     '
     # ------ specific for Ubuntu_16_04 ------
+
+    # ------ specific for LinuxMint_18_2 ------
+    pkgs_LinuxMint_18_2='
+        :u:
+        python-apt
+        software-properties-common
+        :c:add-apt-repository\sppa:jonathonf/ffmpeg-4\s-y
+        :u:
+        passwd
+        ffmpeg
+        unzip
+        zip
+        automake
+        autotools-dev
+        build-essential
+        check
+        checkinstall
+        libtool
+        pkg-config
+        rsync
+        git
+        libx11-dev
+        x11-common
+        x11-utils
+        libasound2-dev
+        libv4l-dev
+        v4l-conf
+        v4l-utils
+        libjpeg8-dev
+        libavcodec-dev
+        libavdevice-dev
+        libsodium-dev
+        libvpx-dev
+        libopus-dev
+        libx264-dev
+    '
+    # ------ specific for Ubuntu_16_04 ------
+
+    # ------ specific for LinuxMint_18_2 ------
 
     # ------ specific for AlpineLinux_3_12_0 ------
     pkgs_AlpineLinux_3_12_0='
@@ -190,7 +229,7 @@ if [ "$1""x" == "dockerx" ]; then
     # ------ specific for AlpineLinux_3_12_0 ------
 
 
-    # ------ specific for pkgs_ArchLinux_ ------
+    # ------ specific for ArchLinux_ ------
     pkgs_ArchLinux_='
         :c:pacman\s-Sy
         :c:pacman\s-S\s--noconfirm\sbase-devel
@@ -205,9 +244,9 @@ if [ "$1""x" == "dockerx" ]; then
         :c:pacman\s-S\s--noconfirm\sautoconf
         :c:pacman\s-S\s--noconfirm\sgit
     '
-    # ------ specific for pkgs_ArchLinux_ ------
+    # ------ specific for ArchLinux_ ------
 
-    # ------ specific for pkgs_Gentoo_ ------
+    # ------ specific for Gentoo_ ------
     pkgs_Gentoo_='
         :c:emerge-webrsync
         :c:emerge\s-u1\ssys-apps/portage
@@ -223,7 +262,45 @@ if [ "$1""x" == "dockerx" ]; then
         :c:emerge\s-u1\sffmpeg
         :c:emerge\s-u1\sx11-libs/libX11
     '
-    # ------ specific for pkgs_Gentoo_ ------
+    # ------ specific for Gentoo_ ------
+
+    # ------ specific for CentOSLinux_7 ------
+    pkgs_CentOSLinux_7='
+        :c:yum\scheck-update
+        :c:yum\sinstall\s-y\sgit
+        :c:yum\sinstall\s-y\spasswd
+        :c:yum\sinstall\s-y\sunzip
+        :c:yum\sinstall\s-y\szip
+        :c:yum\sinstall\s-y\smake
+        :c:yum\sinstall\s-y\sautomake
+        :c:yum\sinstall\s-y\sautoconf
+        :c:yum\sinstall\s-y\scheck
+        :c:yum\sinstall\s-y\scheckinstall
+        :c:yum\sinstall\s-y\slibtool
+        :c:yum\sinstall\s-y\spkg-config
+        :c:yum\sinstall\s-y\srsync
+        :c:yum\sinstall\s-y\skernel-headers
+        :c:yum\sinstall\s-y\slibX11-devel
+        :c:yum\sinstall\s-y\slibX11-common
+        :c:yum\sinstall\s-y\sxorg-x11-utils
+        :c:yum\sinstall\s-y\slibvpx-devel
+        :c:yum\sinstall\s-y\sopus-devel
+        :c:yum\sinstall\s-y\salsa-utils
+        :c:yum\sinstall\s-y\slibv4l-devel
+        :c:yum\sinstall\s-y\sv4l-utils-devel-tools
+        :c:yum\sinstall\s-y\sv4l-utils
+        :c:yum\sinstall\s-y\slibjpeg-turbo-devel
+        :c:yum\sinstall\s-y\shttps://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+        :c:yum\scheck-update
+        :c:yum\sinstall\s-y\slibsodium
+        :c:yum\sinstall\s-y\slibsodium-devel
+        :c:yum\slocalinstall\s-y\shttps://download1.rpmfusion.org/free/el/rpmfusion-free-release-7.noarch.rpm
+        :c:yum\scheck-update
+        :c:yum\sinstall\s-y\sffmpeg-devel
+        :c:yum\sinstall\s-y\sx264-devel
+        :c:yum\sinstall\s-y\salsa-lib-devel
+    '
+    # ------ specific for CentOSLinux_7 ------
 
 
     echo '# install commands for : '"$system__ $version__" > /artefacts/install_commands.txt

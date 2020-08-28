@@ -26,6 +26,8 @@ system_to_build_for="ubuntu:18.04"
 # system_to_build_for="alpine:3.12.0"
 # system_to_build_for="archlinux:20200605"
 # system_to_build_for="gentoo/stage3-amd64:latest"
+# system_to_build_for="centos:7"
+# system_to_build_for="vcatechnology/linux-mint:18.2"
 
 cd $_HOME_/
 docker run -ti --rm \
